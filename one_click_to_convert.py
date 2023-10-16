@@ -1302,7 +1302,7 @@ def export_onnx(ModelPath, ExportedPath):
 #################################
 MODEL_NAME = 'spiderum'
 SAMPLE_RATE = '48k'
-F0 = 'no'  # yes for singing
+F0 = False  # True for singing
 TRAINSET_DIR = '/content/dataset'
 SPEAKER_ID = 0
 GPUS_TO_TRAIN = '0'
@@ -1311,42 +1311,49 @@ F0_METHOD = 'harvest'
 SAVE_EPOCH = 5
 TOTAL_EPOCH = 20
 BATCH_SIZE_PER_GPU = 7
-SAVE_LATEST = 'yes'
+SAVE_LATEST = 'Yes'
+VERSION = 'v2'
 
-PRETRAINED_G = "pretrained/G40k.pth"
-PRETRAINED_D = "pretrained/D40k.pth"
+pretrained_path = 'pretrained'
+if VERSION == 'v2':
+  pretrained_path = 'pretrained_v2'
 
-if F0 == 'yes':
-    PRETRAINED_G = "pretrained/f0G40k.pth"
-    PRETRAINED_D = "pretrained/f0D40k.pth"
+PRETRAINED_G = f"{pretrained_path}/G{SAMPLE_RATE}.pth"
+PRETRAINED_D = f"{pretrained_path}/D{SAMPLE_RATE}.pth"
 
-CACHE_GPU = 'no'
-SAVE_EVERY_WEIGHTS = 'no'
-VERSION='v2'
+if F0:
+    PRETRAINED_G = f"{pretrained_path}/f0G{SAMPLE_RATE}.pth"
+    PRETRAINED_D = f"{pretrained_path}/f0D{SAMPLE_RATE}.pth"
+
+CACHE_GPU = 'No'
+SAVE_EVERY_WEIGHTS = 'No'
 
 ###################################
-AUDIO_DIR_INPUT = '/content/audio_input/'
-AUDIO_DIR_OUTPUT = '/content/audio_output/'
-VC_TRANSFORM = 0
-INDEX_FILE_NAME = ''
-INDEX_FILE = f'/content/{MODEL_NAME}/{INDEX_FILE_NAME}'
-MODEL_FILE = f'/content/{MODEL_NAME}/{MODEL_NAME}.pth'
+AUDIO_DIR_INPUT = '/content/drive/MyDrive/ai/sounds'
+AUDIO_DIR_OUTPUT = '/content/drive/MyDrive/ai/sounds_out'
+VC_TRANSFORM = 0.0
+INDEX_FILE = f'/content/RVC/logs/{MODEL_NAME}/trained_IVF564_Flat_nprobe_1_{MODEL_NAME}_v2'
+MODEL_FILE = f'/content/RVC/weights/{MODEL_NAME}.pth'
 INDEX_RATE = 1
 FILTER_RADIUS = 3
-RESAMPLE_SR = int(SAMPLE_RATE.replace('k')) * 1000
+RESAMPLE_SR = int(SAMPLE_RATE.replace('k', '')) * 1000
 RMS_MIX_RATE = 1
 PROTECT = 0.33
 OUTPUT_FORMAT = 'mp3'
+
+get_vc(sid=f'{MODEL_NAME}.pth',
+       to_return_protect0=PROTECT,
+       to_return_protect1=PROTECT)
 
 vc_multi(
     sid=SPEAKER_ID,
     dir_path=AUDIO_DIR_INPUT,
     opt_root=AUDIO_DIR_OUTPUT,
-    path=[],
+    paths=None,
     f0_up_key=VC_TRANSFORM,
     f0_method=F0_METHOD,
     file_index=INDEX_FILE,
-    file_index2=[],
+    file_index2='',
     # file_big_npy,
     index_rate=INDEX_RATE,
     filter_radius=FILTER_RADIUS,

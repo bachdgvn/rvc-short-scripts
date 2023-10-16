@@ -40,7 +40,6 @@ from sklearn.cluster import MiniBatchKMeans
 
 logging.getLogger("numba").setLevel(logging.WARNING)
 
-
 tmp = os.path.join(now_dir, "TEMP")
 shutil.rmtree(tmp, ignore_errors=True)
 shutil.rmtree(
@@ -53,7 +52,6 @@ os.makedirs(os.path.join(now_dir, "weights"), exist_ok=True)
 os.environ["TEMP"] = tmp
 warnings.filterwarnings("ignore")
 torch.manual_seed(114514)
-
 
 config = Config()
 i18n = I18nAuto()
@@ -68,27 +66,27 @@ if torch.cuda.is_available() or ngpu != 0:
     for i in range(ngpu):
         gpu_name = torch.cuda.get_device_name(i)
         if any(
-            value in gpu_name.upper()
-            for value in [
-                "10",
-                "16",
-                "20",
-                "30",
-                "40",
-                "A2",
-                "A3",
-                "A4",
-                "P4",
-                "A50",
-                "500",
-                "A60",
-                "70",
-                "80",
-                "90",
-                "M4",
-                "T4",
-                "TITAN",
-            ]
+                value in gpu_name.upper()
+                for value in [
+                    "10",
+                    "16",
+                    "20",
+                    "30",
+                    "40",
+                    "A2",
+                    "A3",
+                    "A4",
+                    "P4",
+                    "A50",
+                    "500",
+                    "A60",
+                    "70",
+                    "80",
+                    "90",
+                    "M4",
+                    "T4",
+                    "TITAN",
+                ]
         ):
             # A10#A100#V100#A40#P40#M40#K80#A4500
             if_gpu_ok = True  # 至少有一张能用的N卡
@@ -158,19 +156,19 @@ for name in os.listdir(weight_uvr5_root):
 
 
 def vc_single(
-    sid,
-    input_audio_path,
-    f0_up_key,
-    f0_file,
-    f0_method,
-    file_index,
-    file_index2,
-    # file_big_npy,
-    index_rate,
-    filter_radius,
-    resample_sr,
-    rms_mix_rate,
-    protect,
+        sid,
+        input_audio_path,
+        f0_up_key,
+        f0_file,
+        f0_method,
+        file_index,
+        file_index2,
+        # file_big_npy,
+        index_rate,
+        filter_radius,
+        resample_sr,
+        rms_mix_rate,
+        protect,
 ):  # spk_item, input_audio0, vc_transform0,f0_file,f0method0
     global tgt_sr, net_g, vc, hubert_model, version
     if input_audio_path is None:
@@ -188,11 +186,11 @@ def vc_single(
         file_index = (
             (
                 file_index.strip(" ")
-                .strip('"')
-                .strip("\n")
-                .strip('"')
-                .strip(" ")
-                .replace("trained", "added")
+                    .strip('"')
+                    .strip("\n")
+                    .strip('"')
+                    .strip(" ")
+                    .replace("trained", "added")
             )
             if file_index != ""
             else file_index2
@@ -241,21 +239,21 @@ def vc_single(
 
 
 def vc_multi(
-    sid,
-    dir_path,
-    opt_root,
-    paths,
-    f0_up_key,
-    f0_method,
-    file_index,
-    file_index2,
-    # file_big_npy,
-    index_rate,
-    filter_radius,
-    resample_sr,
-    rms_mix_rate,
-    protect,
-    format1,
+        sid,
+        dir_path,
+        opt_root,
+        paths,
+        f0_up_key,
+        f0_method,
+        file_index,
+        file_index2,
+        # file_big_npy,
+        index_rate,
+        filter_radius,
+        resample_sr,
+        rms_mix_rate,
+        protect,
+        format1,
 ):
     try:
         dir_path = (
@@ -351,8 +349,8 @@ def uvr(model_name, inp_root, save_root_vocal, paths, save_root_ins, agg, format
             try:
                 info = ffmpeg.probe(inp_path, cmd="ffprobe")
                 if (
-                    info["streams"][0]["channels"] == 2
-                    and info["streams"][0]["sample_rate"] == "44100"
+                        info["streams"][0]["channels"] == 2
+                        and info["streams"][0]["sample_rate"] == "44100"
                 ):
                     need_reformat = 0
                     pre_fun._path_audio_(
@@ -540,10 +538,10 @@ def preprocess_dataset(trainset_dir, exp_dir, sr, n_p):
     f = open("%s/logs/%s/preprocess.log" % (now_dir, exp_dir), "w")
     f.close()
     cmd = (
-        config.python_cmd
-        + " trainset_preprocess_pipeline_print.py %s %s %s %s/logs/%s "
-        % (trainset_dir, sr, n_p, now_dir, exp_dir)
-        + str(config.noparallel)
+            config.python_cmd
+            + " trainset_preprocess_pipeline_print.py %s %s %s %s/logs/%s "
+            % (trainset_dir, sr, n_p, now_dir, exp_dir)
+            + str(config.noparallel)
     )
     print(cmd)
     p = Popen(cmd, shell=True)  # , stdin=PIPE, stdout=PIPE,stderr=PIPE,cwd=now_dir
@@ -594,7 +592,7 @@ def extract_f0_feature(gpus, n_p, f0method, if_f0, exp_dir, version19):
         ).start()
         while 1:
             with open(
-                "%s/logs/%s/extract_f0_feature.log" % (now_dir, exp_dir), "r"
+                    "%s/logs/%s/extract_f0_feature.log" % (now_dir, exp_dir), "r"
             ) as f:
                 yield (f.read())
             sleep(1)
@@ -616,17 +614,17 @@ def extract_f0_feature(gpus, n_p, f0method, if_f0, exp_dir, version19):
     ps = []
     for idx, n_g in enumerate(gpus):
         cmd = (
-            config.python_cmd
-            + " extract_feature_print.py %s %s %s %s %s/logs/%s %s"
-            % (
-                config.device,
-                leng,
-                idx,
-                n_g,
-                now_dir,
-                exp_dir,
-                version19,
-            )
+                config.python_cmd
+                + " extract_feature_print.py %s %s %s %s %s/logs/%s %s"
+                % (
+                    config.device,
+                    leng,
+                    idx,
+                    n_g,
+                    now_dir,
+                    exp_dir,
+                    version19,
+                )
         )
         print(cmd)
         p = Popen(
@@ -761,20 +759,20 @@ def change_f0(if_f0_3, sr2, version19):  # f0method8,pretrained_G14,pretrained_D
 
 # but3.click(click_train,[exp_dir1,sr2,if_f0_3,save_epoch10,total_epoch11,batch_size12,if_save_latest13,pretrained_G14,pretrained_D15,gpus16])
 def click_train(
-    exp_dir1,
-    sr2,
-    if_f0_3,
-    spk_id5,
-    save_epoch10,
-    total_epoch11,
-    batch_size12,
-    if_save_latest13,
-    pretrained_G14,
-    pretrained_D15,
-    gpus16,
-    if_cache_gpu17,
-    if_save_every_weights18,
-    version19,
+        exp_dir1,
+        sr2,
+        if_f0_3,
+        spk_id5,
+        save_epoch10,
+        total_epoch11,
+        batch_size12,
+        if_save_latest13,
+        pretrained_G14,
+        pretrained_D15,
+        gpus16,
+        if_cache_gpu17,
+        if_save_every_weights18,
+        version19,
 ):
     # 生成filelist
     exp_dir = "%s/logs/%s" % (now_dir, exp_dir1)
@@ -789,10 +787,10 @@ def click_train(
         f0_dir = "%s/2a_f0" % (exp_dir)
         f0nsf_dir = "%s/2b-f0nsf" % (exp_dir)
         names = (
-            set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)])
-            & set([name.split(".")[0] for name in os.listdir(feature_dir)])
-            & set([name.split(".")[0] for name in os.listdir(f0_dir)])
-            & set([name.split(".")[0] for name in os.listdir(f0nsf_dir)])
+                set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)])
+                & set([name.split(".")[0] for name in os.listdir(feature_dir)])
+                & set([name.split(".")[0] for name in os.listdir(f0_dir)])
+                & set([name.split(".")[0] for name in os.listdir(f0nsf_dir)])
         )
     else:
         names = set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)]) & set(
@@ -852,42 +850,42 @@ def click_train(
         print("no pretrained Discriminator")
     if gpus16:
         cmd = (
-            config.python_cmd
-            + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -g %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
-            % (
-                exp_dir1,
-                sr2,
-                1 if if_f0_3 else 0,
-                batch_size12,
-                gpus16,
-                total_epoch11,
-                save_epoch10,
-                "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
-                "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
-                1 if if_save_latest13 == i18n("是") else 0,
-                1 if if_cache_gpu17 == i18n("是") else 0,
-                1 if if_save_every_weights18 == i18n("是") else 0,
-                version19,
-            )
+                config.python_cmd
+                + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -g %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
+                % (
+                    exp_dir1,
+                    sr2,
+                    1 if if_f0_3 else 0,
+                    batch_size12,
+                    gpus16,
+                    total_epoch11,
+                    save_epoch10,
+                    "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
+                    "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
+                    1 if if_save_latest13 == i18n("是") else 0,
+                    1 if if_cache_gpu17 == i18n("是") else 0,
+                    1 if if_save_every_weights18 == i18n("是") else 0,
+                    version19,
+                )
         )
     else:
         cmd = (
-            config.python_cmd
-            + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
-            % (
-                exp_dir1,
-                sr2,
-                1 if if_f0_3 else 0,
-                batch_size12,
-                total_epoch11,
-                save_epoch10,
-                "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "\b",
-                "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "\b",
-                1 if if_save_latest13 == i18n("是") else 0,
-                1 if if_cache_gpu17 == i18n("是") else 0,
-                1 if if_save_every_weights18 == i18n("是") else 0,
-                version19,
-            )
+                config.python_cmd
+                + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
+                % (
+                    exp_dir1,
+                    sr2,
+                    1 if if_f0_3 else 0,
+                    batch_size12,
+                    total_epoch11,
+                    save_epoch10,
+                    "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "\b",
+                    "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "\b",
+                    1 if if_save_latest13 == i18n("是") else 0,
+                    1 if if_cache_gpu17 == i18n("是") else 0,
+                    1 if if_save_every_weights18 == i18n("是") else 0,
+                    version19,
+                )
         )
     print(cmd)
     p = Popen(cmd, shell=True, cwd=now_dir)
@@ -931,8 +929,8 @@ def train_index(exp_dir1, version19):
                     compute_labels=False,
                     init="random",
                 )
-                .fit(big_npy)
-                .cluster_centers_
+                    .fit(big_npy)
+                    .cluster_centers_
             )
         except:
             info = traceback.format_exc()
@@ -961,7 +959,7 @@ def train_index(exp_dir1, version19):
     yield "\n".join(infos)
     batch_size_add = 8192
     for i in range(0, big_npy.shape[0], batch_size_add):
-        index.add(big_npy[i : i + batch_size_add])
+        index.add(big_npy[i: i + batch_size_add])
     faiss.write_index(
         index,
         "%s/added_IVF%s_Flat_nprobe_%s_%s_%s.index"
@@ -978,23 +976,23 @@ def train_index(exp_dir1, version19):
 
 # but5.click(train1key, [exp_dir1, sr2, if_f0_3, trainset_dir4, spk_id5, gpus6, np7, f0method8, save_epoch10, total_epoch11, batch_size12, if_save_latest13, pretrained_G14, pretrained_D15, gpus16, if_cache_gpu17], info3)
 def train1key(
-    exp_dir1,
-    sr2,
-    if_f0_3,
-    trainset_dir4,
-    spk_id5,
-    np7,
-    f0method8,
-    save_epoch10,
-    total_epoch11,
-    batch_size12,
-    if_save_latest13,
-    pretrained_G14,
-    pretrained_D15,
-    gpus16,
-    if_cache_gpu17,
-    if_save_every_weights18,
-    version19,
+        exp_dir1,
+        sr2,
+        if_f0_3,
+        trainset_dir4,
+        spk_id5,
+        np7,
+        f0method8,
+        save_epoch10,
+        total_epoch11,
+        batch_size12,
+        if_save_latest13,
+        pretrained_G14,
+        pretrained_D15,
+        gpus16,
+        if_cache_gpu17,
+        if_save_every_weights18,
+        version19,
 ):
     infos = []
 
@@ -1015,10 +1013,10 @@ def train1key(
     #########step1:处理数据
     open(preprocess_log_path, "w").close()
     cmd = (
-        config.python_cmd
-        + " trainset_preprocess_pipeline_print.py %s %s %s %s "
-        % (trainset_dir4, sr_dict[sr2], np7, model_log_dir)
-        + str(config.noparallel)
+            config.python_cmd
+            + " trainset_preprocess_pipeline_print.py %s %s %s %s "
+            % (trainset_dir4, sr_dict[sr2], np7, model_log_dir)
+            + str(config.noparallel)
     )
     get_info_str(i18n("step1:正在处理数据"))
     get_info_str(cmd)
@@ -1072,10 +1070,10 @@ def train1key(
         f0_dir = "%s/2a_f0" % model_log_dir
         f0nsf_dir = "%s/2b-f0nsf" % model_log_dir
         names = (
-            set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)])
-            & set([name.split(".")[0] for name in os.listdir(feature_dir)])
-            & set([name.split(".")[0] for name in os.listdir(f0_dir)])
-            & set([name.split(".")[0] for name in os.listdir(f0nsf_dir)])
+                set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)])
+                & set([name.split(".")[0] for name in os.listdir(feature_dir)])
+                & set([name.split(".")[0] for name in os.listdir(f0_dir)])
+                & set([name.split(".")[0] for name in os.listdir(f0nsf_dir)])
         )
     else:
         names = set([name.split(".")[0] for name in os.listdir(gt_wavs_dir)]) & set(
@@ -1128,42 +1126,42 @@ def train1key(
     get_info_str("write filelist done")
     if gpus16:
         cmd = (
-            config.python_cmd
-            + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -g %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
-            % (
-                exp_dir1,
-                sr2,
-                1 if if_f0_3 else 0,
-                batch_size12,
-                gpus16,
-                total_epoch11,
-                save_epoch10,
-                "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
-                "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
-                1 if if_save_latest13 == i18n("是") else 0,
-                1 if if_cache_gpu17 == i18n("是") else 0,
-                1 if if_save_every_weights18 == i18n("是") else 0,
-                version19,
-            )
+                config.python_cmd
+                + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -g %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
+                % (
+                    exp_dir1,
+                    sr2,
+                    1 if if_f0_3 else 0,
+                    batch_size12,
+                    gpus16,
+                    total_epoch11,
+                    save_epoch10,
+                    "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
+                    "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
+                    1 if if_save_latest13 == i18n("是") else 0,
+                    1 if if_cache_gpu17 == i18n("是") else 0,
+                    1 if if_save_every_weights18 == i18n("是") else 0,
+                    version19,
+                )
         )
     else:
         cmd = (
-            config.python_cmd
-            + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
-            % (
-                exp_dir1,
-                sr2,
-                1 if if_f0_3 else 0,
-                batch_size12,
-                total_epoch11,
-                save_epoch10,
-                "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
-                "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
-                1 if if_save_latest13 == i18n("是") else 0,
-                1 if if_cache_gpu17 == i18n("是") else 0,
-                1 if if_save_every_weights18 == i18n("是") else 0,
-                version19,
-            )
+                config.python_cmd
+                + " train_nsf_sim_cache_sid_load_pretrain.py -e %s -sr %s -f0 %s -bs %s -te %s -se %s %s %s -l %s -c %s -sw %s -v %s"
+                % (
+                    exp_dir1,
+                    sr2,
+                    1 if if_f0_3 else 0,
+                    batch_size12,
+                    total_epoch11,
+                    save_epoch10,
+                    "-pg %s" % pretrained_G14 if pretrained_G14 != "" else "",
+                    "-pd %s" % pretrained_D15 if pretrained_D15 != "" else "",
+                    1 if if_save_latest13 == i18n("是") else 0,
+                    1 if if_cache_gpu17 == i18n("是") else 0,
+                    1 if if_save_every_weights18 == i18n("是") else 0,
+                    version19,
+                )
         )
     get_info_str(cmd)
     p = Popen(cmd, shell=True, cwd=now_dir)
@@ -1195,8 +1193,8 @@ def train1key(
                     compute_labels=False,
                     init="random",
                 )
-                .fit(big_npy)
-                .cluster_centers_
+                    .fit(big_npy)
+                    .cluster_centers_
             )
         except:
             info = traceback.format_exc()
@@ -1221,7 +1219,7 @@ def train1key(
     get_info_str("adding index")
     batch_size_add = 8192
     for i in range(0, big_npy.shape[0], batch_size_add):
-        index.add(big_npy[i : i + batch_size_add])
+        index.add(big_npy[i: i + batch_size_add])
     faiss.write_index(
         index,
         "%s/added_IVF%s_Flat_nprobe_%s_%s_%s.index"
@@ -1240,7 +1238,7 @@ def change_info_(ckpt_path):
         return {"__type__": "update"}, {"__type__": "update"}, {"__type__": "update"}
     try:
         with open(
-            ckpt_path.replace(os.path.basename(ckpt_path), "train.log"), "r"
+                ckpt_path.replace(os.path.basename(ckpt_path), "train.log"), "r"
         ) as f:
             info = eval(f.read().strip("\n").split("\n")[0].split("\t")[-1])
             sr, f0 = info["sample_rate"], info["if_f0"]
@@ -1299,10 +1297,11 @@ def export_onnx(ModelPath, ExportedPath):
     )
     return "Finished"
 
+
 #################################
 MODEL_NAME = 'spiderum'
 SAMPLE_RATE = '48k'
-F0 = 'no'  # yes for singing
+F0 = True  # True for singing
 TRAINSET_DIR = '/content/dataset'
 SPEAKER_ID = 0
 GPUS_TO_TRAIN = '0'
@@ -1311,37 +1310,41 @@ F0_METHOD = 'harvest'
 SAVE_EPOCH = 5
 TOTAL_EPOCH = 20
 BATCH_SIZE_PER_GPU = 7
-SAVE_LATEST = 'yes'
+SAVE_LATEST = 'Yes'
+VERSION = 'v2'
 
-PRETRAINED_G = "pretrained/G40k.pth"
-PRETRAINED_D = "pretrained/D40k.pth"
+pretrained_path = 'pretrained'
+if VERSION == 'v2':
+  pretrained_path = 'pretrained_v2'
 
-if F0 == 'yes':
-    PRETRAINED_G = "pretrained/f0G40k.pth"
-    PRETRAINED_D = "pretrained/f0D40k.pth"
+PRETRAINED_G = f"{pretrained_path}/G{SAMPLE_RATE}.pth"
+PRETRAINED_D = f"{pretrained_path}/D{SAMPLE_RATE}.pth"
 
-CACHE_GPU = 'no'
-SAVE_EVERY_WEIGHTS = 'no'
-VERSION='v2'
+if F0:
+    PRETRAINED_G = f"{pretrained_path}/f0G{SAMPLE_RATE}.pth"
+    PRETRAINED_D = f"{pretrained_path}/f0D{SAMPLE_RATE}.pth"
+
+CACHE_GPU = 'No'
+SAVE_EVERY_WEIGHTS = 'No'
 
 params = {
-    "exp_dir1":MODEL_NAME,
-    "sr2":SAMPLE_RATE,
-    "if_f0_3":F0,
-    "trainset_dir4":TRAINSET_DIR,
-    "spk_id5":SPEAKER_ID,
-    "np7":CPUS_TO_TRAIN,
-    "f0method8":F0_METHOD,
-    "save_epoch10":SAVE_EPOCH,
-    "total_epoch11":TOTAL_EPOCH,
-    "batch_size12":BATCH_SIZE_PER_GPU,
-    "if_save_latest13":SAVE_LATEST,
-    "pretrained_G14":PRETRAINED_G,
-    "pretrained_D15":PRETRAINED_D,
-    "gpus16":PRETRAINED_D,
-    "if_cache_gpu17":CACHE_GPU,
-    "if_save_every_weights18":SAVE_EVERY_WEIGHTS,
-    "version19":VERSION
+    "exp_dir1": MODEL_NAME,
+    "sr2": SAMPLE_RATE,
+    "if_f0_3": F0,
+    "trainset_dir4": TRAINSET_DIR,
+    "spk_id5": SPEAKER_ID,
+    "np7": CPUS_TO_TRAIN,
+    "f0method8": F0_METHOD,
+    "save_epoch10": SAVE_EPOCH,
+    "total_epoch11": TOTAL_EPOCH,
+    "batch_size12": BATCH_SIZE_PER_GPU,
+    "if_save_latest13": SAVE_LATEST,
+    "pretrained_G14": PRETRAINED_G,
+    "pretrained_D15": PRETRAINED_D,
+    "gpus16": GPUS_TO_TRAIN,
+    "if_cache_gpu17": CACHE_GPU,
+    "if_save_every_weights18": SAVE_EVERY_WEIGHTS,
+    "version19": VERSION
 }
 
 train1key(**params)

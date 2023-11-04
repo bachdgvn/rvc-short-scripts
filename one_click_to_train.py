@@ -1299,7 +1299,7 @@ def export_onnx(ModelPath, ExportedPath):
 
 
 #################################
-MODEL_NAME = 'spiderum'
+MODEL_NAME = os.environ.get('MODEL_NAME')
 SAMPLE_RATE = '48k'
 F0 = True  # True for singing
 TRAINSET_DIR = '/content/dataset'

@@ -1300,7 +1300,7 @@ def export_onnx(ModelPath, ExportedPath):
     return "Finished"
 
 #################################
-MODEL_NAME = 'spiderum'
+MODEL_NAME = os.environ.get('MODEL_NAME')
 SAMPLE_RATE = '48k'
 F0 = False  # True for singing
 TRAINSET_DIR = '/content/dataset'

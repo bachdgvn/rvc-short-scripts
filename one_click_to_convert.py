@@ -1329,8 +1329,8 @@ CACHE_GPU = 'No'
 SAVE_EVERY_WEIGHTS = 'No'
 
 ###################################
-AUDIO_DIR_INPUT = '/content/drive/MyDrive/ai/sounds'
-AUDIO_DIR_OUTPUT = '/content/drive/MyDrive/ai/sounds_out'
+AUDIO_DIR_INPUT = os.environ.get('AUDIO_DIR_INPUT')
+AUDIO_DIR_OUTPUT = os.environ.get('AUDIO_DIR_OUTPUT')
 VC_TRANSFORM = 0.0
 INDEX_FILE = f'/content/RVC/logs/{MODEL_NAME}/trained_IVF564_Flat_nprobe_1_{MODEL_NAME}_v2'
 MODEL_FILE = f'/content/RVC/weights/{MODEL_NAME}.pth'
